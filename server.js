@@ -7,17 +7,21 @@ var stringifyFile;
 
 app.use(bodyParser.json());
 
-app.get('/getNote', function (req, res) {
-    fs.readFile('./test.json', 'utf8', function(err, data) {
+app.use('/', (req, res, next) => {
+	fs.readFile('./test.json', 'utf8', (err, data) => {
     	if (err) throw err;
     	stringifyFile = data;
-    	res.send(data);
 	});
+	next();
 });
 
-app.post('/updateNote/:note', function(req, res){
+app.get('/getNote', (req, res) => {
+   	res.send(stringifyFile);
+});
+
+app.post('/updateNote/:note', (req, res) => {
     	stringifyFile = stringifyFile + req.params.note;
-		fs.writeFile('./test.json', stringifyFile, function(err){
+		fs.writeFile('./test.json', stringifyFile, (err) => {
 			if (err) throw err;
 			console.log('File updated!');
 		});
